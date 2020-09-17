@@ -1,9 +1,14 @@
 import express, { NextFunction, Request, Response } from "express"
 import Users from "./userSchema"
-const router = express()
+import { Credentials } from '../../models/Credentials'
+import { authorize, authenticate, issueRefreshedJWTs } from "./authTools"
+import { AuthorizedRequest } from "../../models/AuthorizedRequest"
+import { RequestError } from "../../models/RequestError"
+const router = express.Router()
 
-router.get("/", async (req: Request, res: Response, next: NextFunction) => {
+router.get("/", authorize, async (req: Request, res: Response, next: NextFunction) => {
   try {
+    // console.log("Welcome " + req.body.user.email)
     const users = await Users.find({})
     res.status(200).send(users)
   } catch (error) {
@@ -13,7 +18,8 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
 
 router.post("/signup", async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { _id } = await Users.create(req.body)
+    const { credentials } = req.body
+    const { _id } = await Users.create(credentials)
 
     res.status(201).send(_id)
   } catch (error) {
@@ -21,14 +27,15 @@ router.post("/signup", async (req: Request, res: Response, next: NextFunction) =
   }
 })
 
+
 router.post("/", async (req: Request, res: Response, next: NextFunction) => {
     try {
-        // const { email, password } = req.body
-        // const user = await UserModel.findByCredentials(email, password)
+        const credentials = req.body.credentials as Credentials
+        const user = await Users.findByCredentials(credentials)
     
-        // if (!user) throw new Error("Incorrect credentials")
+        if (!user) throw new RequestError("Incorrect credentials", 400)
     
-        const { token, refreshToken } = { token:"testToken", refreshToken:"testRefreshToken"}//await authenticate(user)
+        const { token, refreshToken } = await authenticate(user)
     
         res.cookie("accessToken", token, {
           path:"/",
@@ -42,9 +49,33 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
     
         res.send()
     } catch (error) {
-        error.httpStatusCode = 400
         next(error)
     }    
+})
+
+router.post("/refreshToken", async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const oldRefreshToken = req.cookies.refreshToken
+    if (!oldRefreshToken) throw new RequestError("Refresh token missing", 403)
+    
+    const { token, refreshToken } = await issueRefreshedJWTs(oldRefreshToken)
+
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      path: "/login/refreshToken"
+    })
+
+    res.cookie("accessToken", token, {
+      httpOnly: true,
+    })
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      path: "/login/refreshToken",
+    })
+    res.send()
+  } catch (error) {
+    next(error)
+  }
 })
 
 export default router

@@ -3,9 +3,13 @@ dotenv.config()
 
 import express from "express"
 const server = express()
+
 import cors from "cors"
 import listEndpoints from "express-list-endpoints"
 import cookieParser from "cookie-parser"
+import mongoose from "mongoose"
+import { genericErrorHandler } from "./errorHandlers"
+import loginRouter from './services/login'
 
 // const whitelist = ["http://localhost:3000"]
 // const corsOptions = {
@@ -23,11 +27,9 @@ server.use(cors())
 server.use(cookieParser())
 server.use(express.json())
 
-import loginRouter from './services/login'
-
 server.use("/login", loginRouter)
+server.use(genericErrorHandler)
 
-import mongoose from "mongoose"
 const port = process.env.PORT
 
 mongoose.connect(process.env.MONGO_DB!, {
