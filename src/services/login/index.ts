@@ -1,8 +1,7 @@
 import express, { NextFunction, Request, Response } from "express"
-import Users from "./userSchema"
+import Users from "../../models/Users"
 import { Credentials } from '../../models/Credentials'
 import { authorize, authenticate, issueRefreshedJWTs } from "./authTools"
-import { AuthorizedRequest } from "../../models/AuthorizedRequest"
 import { RequestError } from "../../models/RequestError"
 const router = express.Router()
 

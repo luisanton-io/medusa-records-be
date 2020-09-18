@@ -1,6 +1,6 @@
 import jwt, { JsonWebTokenError, NotBeforeError, TokenExpiredError } from "jsonwebtoken"
 import { DocumentType } from "@typegoose/typegoose"
-import Users, { User } from "./userSchema"
+import Users, { User } from "../../models/Users"
 import { Schema } from "mongoose"
 import { Request, Response, NextFunction } from "express"
 import { RequestError } from "../../models/RequestError"

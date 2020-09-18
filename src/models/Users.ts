@@ -1,8 +1,7 @@
-import { Schema } from "mongoose"
 import bcrypt from "bcryptjs"
 import validator from "validator"
 import { getModelForClass, pre, prop } from "@typegoose/typegoose"
-import { Credentials } from "../../models/Credentials"
+import { Credentials } from "./Credentials"
 
 @pre<User>('save', async function (next) {
   if (this.isModified("password")) {
@@ -12,8 +11,6 @@ import { Credentials } from "../../models/Credentials"
 })
 
 export class User {
-  // public _id!: Schema.Types.ObjectId;
-
   @prop({
     required: true,
     validate: async (value) => {

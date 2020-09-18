@@ -1,7 +1,8 @@
 import { DocumentType } from '@typegoose/typegoose'
 import express, { NextFunction, Request, Response } from 'express'
+import { Releases } from '../../models/releases/Releases'
+import { ReleaseStatus } from '../../models/releases/ReleaseStatus'
 import { authorize } from '../login/authTools'
-import Releases, { Release, ReleaseStatus } from './releaseSchema'
 const router = express.Router()
 
 router.get("/", async (req: Request, res: Response, next: NextFunction) => {
@@ -21,7 +22,7 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
         })
         res.status(201).send(_id)
     } catch (error) {
-        res.status(500).send(error.message)
+        next(error)
     }
 })
 
