@@ -26,25 +26,18 @@ export const authorize = async (req: Request, res: Response, next: NextFunction)
 }
 
 export const authenticate = async (user: DocumentType<User>) => {
-  try {
+  // try {
     // generate tokens
     const newAccessToken = await generateJWT({ _id: user._id })
     const newRefreshToken = await generateRefreshJWT({ _id: user._id })
 
-    // user.refreshTokens = user.refreshTokens.concat({ token: newRefreshToken })
-    console.log("Here are current tokens: " + user.refreshTokens)
     await user.updateOne({
       $push: {
         refreshTokens: newRefreshToken,
-        // refreshTokens: { token: newRefreshToken },
       },
-      // refreshTokens: [...user.refreshTokens, {token: newRefreshToken}]
     });
     return { token: newAccessToken, refreshToken: newRefreshToken }
-  } catch (error) {
-    console.log(error)
-    throw new Error(error)
-  }
+  // } catch (error) { throw new Error(error) }
 }
 
 interface JwtPayload {

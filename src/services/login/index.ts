@@ -8,7 +8,6 @@ const router = express.Router()
 
 router.get("/", authorize, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    // console.log("Welcome " + req.body.user.email)
     const users = await Users.find({})
     res.status(200).send(users)
   } catch (error) {
@@ -21,6 +20,16 @@ router.post("/signup", async (req: Request, res: Response, next: NextFunction) =
     const { credentials } = req.body
     const { _id } = await Users.create(credentials)
 
+    res.clearCookie("accessToken", {
+      path:"/",
+      httpOnly: true
+    })
+
+    res.clearCookie("refreshToken", {
+      path:"/login/refreshToken",
+      httpOnly: true
+    })
+    
     res.status(201).send(_id)
   } catch (error) {
     res.status(500).send(error.message)

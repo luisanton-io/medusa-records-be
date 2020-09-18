@@ -1,7 +1,7 @@
-import mongoose, { Schema } from "mongoose"
+import { Schema } from "mongoose"
 import bcrypt from "bcryptjs"
 import validator from "validator"
-import { arrayProp, getModelForClass, pre, prop } from "@typegoose/typegoose"
+import { getModelForClass, pre, prop } from "@typegoose/typegoose"
 import { Credentials } from "../../models/Credentials"
 
 @pre<User>('save', async function (next) {
@@ -12,7 +12,7 @@ import { Credentials } from "../../models/Credentials"
 })
 
 export class User {
-  public _id!: Schema.Types.ObjectId;
+  // public _id!: Schema.Types.ObjectId;
 
   @prop({
     required: true,
