@@ -1,4 +1,3 @@
-import { DocumentType } from '@typegoose/typegoose'
 import express, { NextFunction, Request, Response } from 'express'
 import { Releases } from '../../models/releases/Releases'
 import { ReleaseStatus } from '../../models/releases/ReleaseStatus'

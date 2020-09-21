@@ -14,8 +14,6 @@ export const authorize = async (req: Request, res: Response, next: NextFunction)
     if (!user)
       throw new RequestError("Please authenticate", 401) 
     else {
-      // req.token = token
-      // req.user = user!
       req.body.token = token
       req.body.user = user
       next()

@@ -15,7 +15,7 @@ export class Release {
 
   @prop({ required: true })
   public mainArtist!: string
-  
+
   @prop()
   public featurings?: string
   
@@ -25,7 +25,7 @@ export class Release {
   @prop({ required: true })
   public date!: Date
 
-  @prop({ required: true, enum: Genre })
+  @prop({ required: true, enum: Genre})
   public genre!: Genre
 
   @prop({ required: true })
