@@ -4,7 +4,7 @@ dotenv.config()
 import express from "express"
 const server = express()
 
-import cors from "cors"
+import cors, { CorsOptions } from "cors"
 import listEndpoints from "express-list-endpoints"
 import cookieParser from "cookie-parser"
 import mongoose from "mongoose"
@@ -14,19 +14,19 @@ import { genericErrorHandler } from "./errorHandlers"
 import loginRouter from './services/login'
 import releasesRouter from './services/releases'
 
-// const whitelist = ["http://localhost:3000"]
-// const corsOptions = {
-//   origin: (origin, callback) => {
-//     if (whitelist.indexOf(origin) !== -1 || !origin) {
-//       callback(null, true)
-//     } else {
-//       callback(new Error("Not allowed by CORS"))
-//     }
-//   },
-//   credentials: true,
-// }
-// server.use(cors(corsOptions))
-server.use(cors())
+const whitelist = ["http://localhost:3000"]
+const corsOptions: CorsOptions = {
+  origin: function (requestOrigin: string | undefined, callback: (error: Error | null, success: boolean | undefined) => void) {
+    if ( (requestOrigin && whitelist.indexOf(requestOrigin) !== -1) || !requestOrigin ) {
+      callback(null, true)
+    } else {
+      callback(new Error("Not allowed by CORS"), undefined)
+    }
+  },
+  credentials: true,
+}
+server.use(cors(corsOptions))
+// server.use(cors())
 server.use(cookieParser())
 server.use(express.json())
 

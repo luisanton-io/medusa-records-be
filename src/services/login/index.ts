@@ -55,7 +55,7 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
           httpOnly: true
         })
     
-        res.send()
+        res.status(200).send()
     } catch (error) {
         next(error)
     }    
