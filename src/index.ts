@@ -28,7 +28,7 @@ const corsOptions: CorsOptions = {
 server.use(cors(corsOptions))
 // server.use(cors())
 server.use(cookieParser())
-server.use(express.json())
+server.use(express.json({limit:'9mb'}))
 
 server.use("/login", loginRouter)
 server.use("/releases", releasesRouter)

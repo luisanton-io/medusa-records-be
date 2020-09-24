@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs"
-import validator from "validator"
+// import validator from "validator"
 import { getModelForClass, pre, prop } from "@typegoose/typegoose"
 import { Credentials } from "./Credentials"
 

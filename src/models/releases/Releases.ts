@@ -1,4 +1,4 @@
-import { getModelForClass, prop } from "@typegoose/typegoose"
+import { getModelForClass, pre, prop } from "@typegoose/typegoose"
 import { Genre } from "./Genre"
 import { ReleaseStatus } from "./ReleaseStatus"
 
@@ -14,7 +14,7 @@ export class Release {
   public email!: string
 
   @prop({ required: true })
-  public mainArtist!: string
+  public mainArtists!: string
 
   @prop()
   public featurings?: string
@@ -39,6 +39,16 @@ export class Release {
 
   @prop({ required: true, enum: ReleaseStatus })
   public status!: ReleaseStatus
+
+  public static async validate (data: unknown) {
+    const model = new Releases(data)
+    let errors = null
+    await model.validate((err) => {
+      console.log(err)
+      errors = err
+    })
+    return errors
+  }
 
 }
 
