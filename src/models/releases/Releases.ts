@@ -2,6 +2,14 @@ import { getModelForClass, pre, prop } from "@typegoose/typegoose"
 import { Genre } from "./Genre"
 import { ReleaseStatus } from "./ReleaseStatus"
 
+//NOT working yet
+@pre<Release>('save', function () {
+  if ( this.isModified("featurings") 
+  && this.featurings?.length === 0 ) {
+    delete this.featurings
+  }
+})
+
 export class Release {
 
   @prop({ required: true })
@@ -13,11 +21,11 @@ export class Release {
   @prop({ required: true })
   public email!: string
 
-  @prop({ required: true })
-  public mainArtists!: string
+  @prop({ required: true, type: () => [String] })
+  public mainArtists!: string[]
 
-  @prop()
-  public featurings?: string
+  @prop({ type: () => [String] })
+  public featurings?: string[]
   
   @prop({ required: true })
   public title!: string
