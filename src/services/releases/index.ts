@@ -30,7 +30,7 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
         
         const errors = await Releases.validate(release)
 
-        if (errors) throw new RequestError(JSON.stringify(errors), 400)
+        if (errors) throw new RequestError(errors, 400)
 
         cloudinary.v2.uploader.upload(coverBase64, async (error: UploadApiErrorResponse, result: UploadApiResponse) => {
             console.log(result, error)   
@@ -63,7 +63,7 @@ router.put("/:id", authorize, async (req: Request, res: Response, next: NextFunc
 
 router.delete("/:id", authorize, async (req: Request, res: Response, next: NextFunction) => {
     try {
-        Releases.findByIdAndDelete(req.params._id)
+        Releases.findByIdAndDelete(req.params.id)
             .then( () =>
                 res.status(202).send()
             )
