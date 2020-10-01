@@ -53,9 +53,11 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
 router.put("/:id", authorize, async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { status } = req.body
-        await Releases.findByIdAndUpdate(req.params._id, { status })
+        Releases.findByIdAndUpdate(req.params.id, { status })
+            .then( () => {
+                res.status(204).send()
+            })
 
-        res.status(204).send()
     } catch (error) {
         next(error)
     }
