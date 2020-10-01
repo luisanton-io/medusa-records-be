@@ -1,5 +1,5 @@
 export enum ReleaseStatus {
+    rejected,
     pending,
-    accepted,
-    rejected
+    accepted
 }
