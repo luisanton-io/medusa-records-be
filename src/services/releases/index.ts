@@ -6,10 +6,19 @@ import cloudinary, { UploadApiErrorResponse, UploadApiResponse }  from 'cloudina
 import { RequestError } from '../../models/RequestError'
 
 const router = express.Router()
+type ReleaseStatusString = keyof typeof ReleaseStatus
 
 router.get("/", async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const releases = await Releases.find({}, null, {sort: { date: 'desc'}})
+        const status = ReleaseStatus[req.query.status as ReleaseStatusString]
+        
+        if (req.query.status && !(req.query.status && Number.isInteger(status)))
+            throw new RequestError(
+                `Invalid status ${req.query.status} ${status} in query. Use ${Object.keys(ReleaseStatus).join(', ')}`, 
+                400
+                )
+
+        const releases = await Releases.find( Number.isInteger(status) ? { status } : {}, null, {sort: { date: 'desc'}})
         res.status(200).send(releases)
     } catch (error) {
         next(error)
