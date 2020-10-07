@@ -15,29 +15,31 @@ export const authorize = async (req: Request, res: Response, next: NextFunction)
     const user = await Users.findById(_id)
 
     if (!user)
-      throw new RequestError("Please authenticate", 401) 
+      throw new RequestError("Please authenticate", 401)
     else {
       req.body.token = token
       req.body.user = user
       next()
     }
   } catch (error) {
-    next(new RequestError(error.message, 401))
+    if (error instanceof TokenExpiredError)
+      next(RequestError.from(error, 403))
+    else next(error)
   }
 }
 
 export const authenticate = async (user: DocumentType<User>) => {
   // try {
-    // generate tokens
-    const newAccessToken = await generateJWT({ _id: user._id })
-    const newRefreshToken = await generateRefreshJWT({ _id: user._id })
+  // generate tokens
+  const newAccessToken = await generateJWT({ _id: user._id })
+  const newRefreshToken = await generateRefreshJWT({ _id: user._id })
 
-    await user.updateOne({
-      $push: {
-        refreshTokens: newRefreshToken,
-      },
-    });
-    return { token: newAccessToken, refreshToken: newRefreshToken }
+  await user.updateOne({
+    $push: {
+      refreshTokens: newRefreshToken,
+    },
+  });
+  return { token: newAccessToken, refreshToken: newRefreshToken }
   // } catch (error) { throw new Error(error) }
 }
 
@@ -86,8 +88,8 @@ export const issueRefreshedJWTs = async (oldRefreshToken: string) => {
   if (!user) throw new Error(`Access is forbidden`)
 
   const currentRefreshToken = user.refreshTokens.find(
-      (t) => t === oldRefreshToken
-    )
+    (t) => t === oldRefreshToken
+  )
 
   if (!currentRefreshToken) throw new Error(`Refresh token is wrong`)
 
@@ -97,8 +99,8 @@ export const issueRefreshedJWTs = async (oldRefreshToken: string) => {
 
   // save in db
   const newRefreshTokens = user.refreshTokens.filter(
-      (t) => t !== oldRefreshToken
-    ).concat(newRefreshToken)
+    (t) => t !== oldRefreshToken
+  ).concat(newRefreshToken)
 
   await user.updateOne({
     refreshTokens: newRefreshTokens

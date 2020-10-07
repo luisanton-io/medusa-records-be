@@ -25,8 +25,7 @@ import { RequestError } from "./models/RequestError"
 
 // catch all
 export const genericErrorHandler = (err: RequestError, req: Request, res: Response, next: NextFunction) => {
-  if (!res.headersSent) {
-    // checks if another error middleware already sent a response
-    res.status(err.code || 500).send({message: err.message})
+  if (!res.headersSent) { // checks if another error middleware already sent a response
+    res.status(err.code || 500).send({...err, code: undefined})
   }
 }
