@@ -1,24 +1,51 @@
 import express, { NextFunction, Request, Response } from 'express'
 import { Releases } from '../../models/releases/Releases'
 import { ReleaseStatus } from '../../models/releases/ReleaseStatus'
-import { authorize } from '../login/authTools'
+import { authorize } from '../authTools'
 import cloudinary, { UploadApiErrorResponse, UploadApiResponse }  from 'cloudinary'
 import { RequestError } from '../../models/RequestError'
 
 const router = express.Router()
 type ReleaseStatusString = keyof typeof ReleaseStatus
 
-router.get("/", async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const status = ReleaseStatus[req.query.status as ReleaseStatusString]
+// router.get("/", async (req: Request, res: Response, next: NextFunction) => {
+//     try {
+//         if (Object.keys(req.query).length > 0) throw new RequestError("No query params allowed.", 400)
         
-        if (req.query.status && !(req.query.status && Number.isInteger(status)))
-            throw new RequestError(
-                `Invalid status ${req.query.status} ${status} in query. Use ${Object.keys(ReleaseStatus).join(', ')}`, 
-                400
-                )
+//         const releases = await Releases.find({}, null, {sort: { date: 'desc'}})
+//         res.status(200).send(releases)
+//     } catch (error) {
+//         next(error)
+//     }
+// })
 
-        const releases = await Releases.find( Number.isInteger(status) ? { status } : {}, null, {sort: { date: 'desc'}})
+router.get("/accepted", async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        if (Object.keys(req.query).length > 0) throw new RequestError("No query params allowed.", 400)
+
+        const releases = await Releases.find({status: ReleaseStatus.accepted}, null, {sort: { date: 'desc'}})
+        res.status(200).send(releases)
+    } catch (error) {
+        next(error)
+    }
+})
+
+router.get("/pending", authorize, async (req: Request, res: Response, next: NextFunction) => {
+    try {   
+        if (Object.keys(req.query).length > 0) throw new RequestError("No query params allowed.", 400)
+
+        const releases = await Releases.find({status: ReleaseStatus.pending}, null, {sort: { date: 'desc'}})
+        res.status(200).send(releases)
+    } catch (error) {
+        next(error)
+    }
+})
+
+router.get("/rejected", authorize, async (req: Request, res: Response, next: NextFunction) => {
+    try {   
+        if (Object.keys(req.query).length > 0) throw new RequestError("No query params allowed.", 400)
+
+        const releases = await Releases.find({status: ReleaseStatus.rejected}, null, {sort: { date: 'desc'}})
         res.status(200).send(releases)
     } catch (error) {
         next(error)
