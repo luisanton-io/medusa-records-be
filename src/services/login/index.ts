@@ -1,7 +1,7 @@
 import express, { NextFunction, Request, Response } from "express"
 import Users from "../../models/Users"
 import { Credentials } from '../../models/Credentials'
-import { authorize, authenticate, issueRefreshedJWTs } from "./authTools"
+import { authorize, authenticate, issueRefreshedJWTs } from "../authTools"
 import { RequestError } from "../../models/RequestError"
 const router = express.Router()
 
@@ -80,7 +80,7 @@ router.post("/refreshToken", async (req: Request, res: Response, next: NextFunct
       httpOnly: true,
       path: "/login/refreshToken",
     })
-    res.send()
+    res.status(222).send()
   } catch (error) {
     next(error)
   }
