@@ -13,6 +13,7 @@ mongoose.set('returnOriginal', false)
 import { genericErrorHandler } from "./errorHandlers"
 import loginRouter from './services/login'
 import releasesRouter from './services/releases'
+import authorizeRouter from "./services/auth"
 
 const whitelist = ["http://localhost:3000"]
 const corsOptions: CorsOptions = {
@@ -32,6 +33,8 @@ server.use(express.json({limit:'9mb'}))
 
 server.use("/login", loginRouter)
 server.use("/releases", releasesRouter)
+server.use("/checkAuth", authorizeRouter)
+
 server.use(genericErrorHandler)
 
 const port = process.env.PORT
