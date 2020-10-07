@@ -1,13 +1,16 @@
 import jwt, { JsonWebTokenError, NotBeforeError, TokenExpiredError } from "jsonwebtoken"
 import { DocumentType } from "@typegoose/typegoose"
-import Users, { User } from "../../models/Users"
+import Users, { User } from "../models/Users"
 import { Schema } from "mongoose"
 import { Request, Response, NextFunction } from "express"
-import { RequestError } from "../../models/RequestError"
+import { RequestError } from "../models/RequestError"
 
 export const authorize = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const token = req.cookies.accessToken
+
+    if (!token) throw new RequestError("Go to login.", 401)
+
     const { _id } = await verifyJWT(token)
     const user = await Users.findById(_id)
 
@@ -19,7 +22,7 @@ export const authorize = async (req: Request, res: Response, next: NextFunction)
       next()
     }
   } catch (error) {
-    next(error)
+    next(new RequestError(error.message, 401))
   }
 }
 
