@@ -43,6 +43,9 @@ export class Release {
   @prop()
   public altContact?: string
 
+  @prop()
+  public displayOnHome?: boolean
+
   @prop({ required: true, enum: ReleaseStatus })
   public status!: ReleaseStatus
 
