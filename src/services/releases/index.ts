@@ -19,6 +19,22 @@ type ReleaseStatusString = keyof typeof ReleaseStatus
 //     }
 // })
 
+router.get("/home", async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        if (Object.keys(req.query).length > 0) throw new RequestError("No query params allowed.", 400)
+
+        const releases = await Releases.find({
+            status: ReleaseStatus.accepted,
+            displayOnHome: true, 
+            date: {$lte: (new Date())}
+        }, null, {sort: { date: 'desc'}})
+
+        res.status(200).send(releases)
+    } catch (error) {
+        next(error)
+    }
+})
+
 router.get("/accepted", async (req: Request, res: Response, next: NextFunction) => {
     try {
         if (Object.keys(req.query).length > 0) throw new RequestError("No query params allowed.", 400)
@@ -88,8 +104,7 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
 
 router.put("/:id", authorize, async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { status } = req.body
-        Releases.findByIdAndUpdate(req.params.id, { status })
+        Releases.findByIdAndUpdate(req.params.id, {...req.body})
             .then( () => {
                 res.status(204).send()
             })
