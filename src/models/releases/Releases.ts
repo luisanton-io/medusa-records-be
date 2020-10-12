@@ -46,6 +46,9 @@ export class Release {
   @prop()
   public displayOnHome?: boolean
 
+  @prop()
+  public fanLink?: string
+
   @prop({ required: true, enum: ReleaseStatus })
   public status!: ReleaseStatus
 
