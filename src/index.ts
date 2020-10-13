@@ -14,6 +14,8 @@ import { genericErrorHandler } from "./errorHandlers"
 import loginRouter from './services/login'
 import releasesRouter from './services/releases'
 import authorizeRouter from "./services/auth"
+import { Releases } from "./models/releases/Releases"
+import { ReleaseStatus } from "./models/releases/ReleaseStatus"
 
 const whitelist = ["http://localhost:3000"]
 const corsOptions: CorsOptions = {
@@ -36,6 +38,11 @@ server.use("/releases", releasesRouter)
 server.use("/checkAuth", authorizeRouter)
 
 server.use(genericErrorHandler)
+
+// setInterval( async () => {
+//   const removingReleases = await Releases.find({status: ReleaseStatus.rejected})
+//   removingReleases.forEach( release => release.deleteOne )
+// }, 86400000)
 
 const port = process.env.PORT
 
