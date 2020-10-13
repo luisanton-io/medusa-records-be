@@ -105,6 +105,4 @@ dist
 
 .vscode
 
-# build/
 build/**/*
-build/services/

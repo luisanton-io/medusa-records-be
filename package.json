@@ -7,13 +7,14 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "ts-node-dev ./src/index.ts --watch src",
     "build": "tsc",
-    "start": "node ./build/index.js"
+    "start": "npm run build && node ./build/index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@sendgrid/mail": "^7.2.6",
+    "@typegoose/typegoose": "^7.4.0",
     "bcryptjs": "^2.4.3",
     "cloudinary": "^1.23.0",
     "cookie-parser": "^1.4.5",
@@ -27,7 +28,6 @@
     "validator": "^13.1.1"
   },
   "devDependencies": {
-    "@typegoose/typegoose": "^7.4.0",
     "@types/bcryptjs": "^2.4.2",
     "@types/cookie-parser": "^1.4.2",
     "@types/cors": "^2.8.7",
