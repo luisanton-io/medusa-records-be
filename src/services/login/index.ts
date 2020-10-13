@@ -21,12 +21,16 @@ router.post("/signup", async (req: Request, res: Response, next: NextFunction) =
 
     res.clearCookie("accessToken", {
       path:"/",
-      httpOnly: true
+      httpOnly: true,
+      sameSite: "none",
+      secure: true
     })
-
+    
     res.clearCookie("refreshToken", {
       path:"/login/refreshToken",
       httpOnly: true
+      sameSite: "none",
+      secure: true
     })
     
     res.status(201).send(_id)
@@ -47,12 +51,16 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
     
         res.cookie("accessToken", token, {
           path:"/",
-          httpOnly: true
+          httpOnly: true,
+          sameSite: "none",
+          secure: true
         })
-    
+        
         res.cookie("refreshToken", refreshToken, {
           path:"/login/refreshToken",
-          httpOnly: true
+          httpOnly: true,
+          sameSite: "none",
+          secure: true
         })
     
         res.status(200).send()
