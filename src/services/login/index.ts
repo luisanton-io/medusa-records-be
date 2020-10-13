@@ -28,7 +28,7 @@ router.post("/signup", async (req: Request, res: Response, next: NextFunction) =
     
     res.clearCookie("refreshToken", {
       path:"/login/refreshToken",
-      httpOnly: true
+      httpOnly: true,
       sameSite: "none",
       secure: true
     })
