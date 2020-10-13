@@ -17,7 +17,7 @@ import authorizeRouter from "./services/auth"
 import { Releases } from "./models/releases/Releases"
 import { ReleaseStatus } from "./models/releases/ReleaseStatus"
 
-const whitelist = ["http://localhost:3000"]
+const whitelist = ["http://localhost:3000", "https://medusa-records.com"]
 const corsOptions: CorsOptions = {
   origin: function (requestOrigin: string | undefined, callback: (error: Error | null, success: boolean | undefined) => void) {
     if ( (requestOrigin && whitelist.indexOf(requestOrigin) !== -1) || !requestOrigin ) {
